@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('last7DaysButton').addEventListener('click', onButtonClick);
         document.getElementById('last4WeeksButton').addEventListener('click', onButtonClick);
         document.getElementById('allTimeButton').addEventListener('click', onButtonClick);
+        document.getElementById('historyHyperlink').addEventListener('click', onButtonClick)
     });
 
     function onButtonClick(event) {
@@ -50,6 +51,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     chrome.history.deleteAll(() => void {});
                 }
                 break;
+
+                case 'historyHyperlink':
+                    {
+                        chrome.tabs.create({url: 'chrome://history'});
+                    }
+                    break;
 
         }
     }
