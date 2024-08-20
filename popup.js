@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     chrome.tabs.query({ active: true, currentWindow: true }, function () {
+        document.getElementById('getSelectedTextButton').addEventListener('click', onButtonClick);
         document.getElementById('lastHourButton').addEventListener('click', onButtonClick);
         document.getElementById('last24HoursButton').addEventListener('click', onButtonClick);
         document.getElementById('last7DaysButton').addEventListener('click', onButtonClick);
@@ -14,6 +15,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const buttonId = button.id;
 
         switch (buttonId) {
+            case 'getSelectedTextButton':
+                {
+                    console.log('getSelectedTextButton clicked');
+                    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                        chrome.tabs.sendMessage(tabs[0].id, { action: "getSelectedText" });
+                    });
+                }
+                break;
+
+
             case 'lastHourButton':
                 {
                     const endTime = new Date().getTime();
@@ -52,11 +63,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 break;
 
-                case 'historyHyperlink':
-                    {
-                        chrome.tabs.create({url: 'chrome://history'});
-                    }
-                    break;
+            case 'historyHyperlink':
+                {
+                    chrome.tabs.create({ url: 'chrome://history' });
+                }
+                break;
 
         }
     }
@@ -65,5 +76,11 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.history.deleteRange({ endTime: endTime, startTime: startTime },
             () => void {});
     }
+});
 
+chrome.runtime.onMessage.addListener(function (request, sender, sendReponse) {
+    if (request.action === 'selectedText') {
+        if (request.text !== '')
+            alert(request.text);
+    }
 });
